@@ -1,0 +1,132 @@
+$ docker ps
+=> Lista containers que estão rodando (ativos) na máquina
+
+$ docker ps -a 
+=> Lista todos os containers da máquina tanto os ativos quanto os inativos.
+
+$ docker run image_name
+=> Roda uma um container contendo a imagem. Mas não segura a execução do contatiner. Ele roda e sai do container.
+
+$ docker run -it ubuntu bash
+=> Roda o container com o nome da imagem ubuntu e executa o comando bash depois de "levantar" o container.
+O -i é o modo interativo. Permite ligar a nossa máquina com o container.
+No caso ligar com o comando que foi solicitado (bash).
+O -t libera o tty do container e deixa executarmos comandos
+Ao rodar o comando acima o container e "levantado" e conseguimos escrever comandos no bash do container.
+
+$ docker run -it --rm ubuntu bash
+=> --rm faz com que ao sair do container eu remova o container. Depois ao listar ele não aparece.
+
+$ docker run -p 8080:80 nginx
+=> -p 8080:8080 indica um redirecionamento da porta 80 do container para a porta 8080 da minha máquina.
+Para acessar o nginx na porta 80 do container eu acesso localhost:8080
+
+$ docker run -d -p 8080:80 nginx
+=> -d é detached. Isso faz com o terminal que rodou fica liberado e o container continua rodando.
+
+===== Para/matar Container ==============
+
+$ docker stop id/name_container 
+=> Para o container
+
+$ docker rm id/name_container
+=> Remove o container. O container tem que estar parado para ser removido. Não sendo listado com docker ps
+
+$ docker rm id/name_container -f
+=> O -f força remover o container. Não sendo listado com docker ps -a
+
+$ docker run -d --name nginx nginx
+=> O --name atribui um nome para o nginx
+
+$ docker exec name_container comando
+=> Executa um comando dentro do container
+
+======= Volumes ===========
+
+$ docker run -d --name nginx -p 8080:80 -v ~/leandro/teste/html:/usr/share/nginx/html nginx
+=> -v monta um volume da minha maquina no container. 
+O que está na pasta do meu computador é montado na pasta apontado no container. 
+Se alterar o arquivo no container reflete na minha maquina e vice versa.
+
+$ docker run -d --name nginx -p 8080:80 --mount type=bind,source="/home/leandro/teste/html",target="/usr/share/nginx/html" nginx
+=> --mount "é a mesma coisa" do -v só que a maeira mais recente de se montar um volume no container.
+
+$ docker volume 
+=> lista os volumes criados
+
+$ docker voume create meuvolume
+=> Cria um voulume com o nome meuvolume
+
+$ docker volume inspect meuvolume
+=> Mostra informações do volume
+
+$ docker run -d --name nginx -p 8080:80 --mount type=volume,source=meuvolume,target="/app" nginx
+=> Monta o volume criado meuvolume na pasta /app do container
+
+$ docker volume prune
+=> Limpa os volumes da sua máquina
+
+===== Imagens ==========================
+
+$ docker pull image_name
+=> Baixa a imagem para seu computador
+
+$ docker images
+=> Lista as imagens já baixadas.
+
+$ docker rmi image_name
+=> Remove uma imagem do computador
+
+$ docker build -t leandroqdbraga/nginx-com-vim:latest .
+=> Gera a imagem docker. -t nome da imagem. 
+leandroqdbraga é o nome do meu usuário no docker hub é um padrão colocar isso. Não é obrigatorio.
+Na verdae é obrigatorio para subir para o docker hub. Mas caso não for subir não é.
+O . indica a pasta atual. Caso o dockerfile não estivesse na pasta era especificar o caminho.
+
+======== DockerFile ==================================
+CMD ["echo", "Olá !!!"]
+=> O CMD executa um comando depois que o container está ativo.
+Só que a diretiva CMD pode ser substiuida caso quando rode (run) o container execute um comando.
+Ex: docker run -t leandroqdbraga/exemplo echo "oi"
+Supondo que a imagem exemplo tem um cmd com echo "Ola!!" no dockerfile.
+Não será exibido o que está no dockerfile e sim o que está na linha de comando, no caso, echo "oi".
+O CMD é um comando váriavel.
+
+ENTRYPOINT["echo", "Fixo"]
+=> O ENTRYPOINT é um comando fixo e não pode ser substiuido por um comando passado pela linha de comando.
+O CMD serve de parametro por ENTRYPOINT quando tem os dois. 
+
+
+======== Network ==================================
+São redes para comunicação entre os containers ou entre containers e o host.
+Tipos de networks:
+    - Bridge: Mais comun. Quando cria uma network e não informa nada é do tipo bridge. 
+            Utiliza para comunicação entre containers. 
+    
+    - Host: Mescla a rede do host e o container.
+    - Overlay: Menos comum. Vários dockers em máquinas diferentes. Faz os containers em maquinas diferentes se comunicam.
+    - None: Sem nenhuma rede.
+
+$ docker network ls
+=> lista as redes existentes
+
+$ docker network prune
+=> Remove todas as networks
+
+$ docker network create --driver bridge minharede
+=> Cria uma nova rede de nome minharede do tipo bridge
+
+$ docker run -dti --name exemplo --network minharede ubuntu bash
+=> Roda um container exemplo ubuntu na rede minharede
+
+$ docker run -dti --name exemplo2 --network minharede ubuntu bash
+=> Roda um container exemplo2 ubuntu na rede minharede
+
+=> Esses dois containers conseguem se comunicar. Inclusive resolvendo o nome da maquina (exemplo, exemplo2)
+
+$ docker run --rm --name nginx --network host nginx
+=> Este container comunica com o host. Se rodar esse comando e acessar http://localhost já deve cair na pagina do nginx.
+=> Não precisa usar o -p 80:80 por exemplo. Tem que rever segurança se for usar.
+
+======== Otizimando Imagem ==================================
+=> Multistage building

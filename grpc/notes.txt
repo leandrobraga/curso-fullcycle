@@ -1,0 +1,15 @@
+==== Geração de código com protoc ====
+$ protoc --go_out=. --go-grpc_out=. proto/course_category.proto
+
+==== Evans ====
+=> Cliente para GRPC
+$ go install github.com/ktr0731/evans@latest
+
+$ evans -r repl
+=> Incia o cliente (tem que rodar o server grpc evidente!)
+
+No cliente para selecionar um serviço:
+$ service Name_Service
+
+Para rodar um service:
+$ call Createcategory

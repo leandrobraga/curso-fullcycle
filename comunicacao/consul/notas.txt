@@ -1,0 +1,112 @@
+========== Consul ==========
+
+$ consul agent -dev
+=> Roda o agente consul em modo dev
+
+$ consul members
+=> Mostra as informações de todo cluster consul. Se é do tipo server, client, ip, status dentre outras.
+=> É recomendado sempre rodar com  3 máquinas servers e a partir das terceira sempre em numeros ímpares.
+=> Dentre as maquinas servers existe sempre a lider que é decidida pelo próprio consul. Se a lider cai o próprio protocolo
+elege uma outra.
+
+$ curl localhost:8500/v1/catalog/nodes
+=> O consul possui um api http. Nesse caso mostra os nós do cluster
+
+=> Consul possui um servidor DNS que por padrão roda na porta 8600.
+
+$ apk -U add bind-tools
+=> para trabalhar com qualquer server DNS existe um cli chamado dig.
+=> Ele fica no pacote bind-tools. É necessário instalá-lo.
+
+$ dig @localhost -p 8600 consul01.node.consul
+=> mostra informações do node consultado
+
+========== Cluster Consul ==========
+=> Criar os diretórios /var/lib/consul e /etc/consul.d
+
+$ consul agent -server -bootstrap-expect=3 -node=consulserver01 -bind=172.22.0.2 -data-dir=/var/lib/consul -config-dir=/etc/consul.d
+=> Comando que sobre um agente como server.
+=> -bootstrap-expect indica quantos servers vão ser esperados nesse cluster
+=> -bind o ip da rede do container
+=> -data-dir onde fica os arquivos gerados pelo consul
+=> -config-dir onde fica os arquivos de configuração do consul
+
+=> Roda esse comando em três maquinas (containers). Depois é necessário dar um join.
+
+$ consul join ip_da_outra_maquina
+
+=> Necessário executar comando nos 3 containers. Colocando sempre o ip de uma das ouras máquinas
+
+========= Cliente Consul =============
+=> Criar os diretórios /var/lib/consul e /etc/consul.d
+
+$ consul agent -bind=172.23.0.5 -data-dir=/var/lib/consul -config-dir=/etc/consul.d
+
+=> Depois é necessário dar um join para que o cliente "entre" no cluster
+
+$ consul join ip_de_uma_das_maquinas_do_cluster
+
+
+========= Registrando Serviço =========
+=> Na pasta criada clients/consul01 cria um json com os serviços que vão ser registrados.
+=> Lembrando que clients/consul01 foi mapeado no docker-compose como um volume para /etc/consul.d onde realmente deve ficar o JSON.
+=> Esse JSON tem vários parâmetros que pode ser passado (id, name, tags, port e váaaaarios outros).
+=> No exemplo foi usado um serviço para o Nginx.
+
+$ consul reload
+
+=> Com esse comando o Consul registra o serviço 
+=> Mesmo que nginx não esteja na instalado na máquina vai ser registrado um serviço com as especificações passadas no JSON
+
+$ curl localhost:8500/v1/catalog/services
+=> retorna os serviços
+
+$ dig @localhost -p 8600 nginx.service.consul
+=> retorna o serviço
+
+$ consul catalog nodes -service nginx
+=> Traz em qual node o serviço nginx está registrado
+
+======== Registrando um segundo serviço nginx =======
+=> Foi criada a pasta clients/consul02 para o container do cliente 2.
+=> O conteúdo do JSON é o mesmo com a diferença do ID que passou a ser nginx2
+
+$ consul agent -bind=172.23.0.6 -data-dir=/var/lib/consul -config-dir=/etc/consul.d -retry-join=172.23.0.4
+=> Aqui criou o agente usando o -retry-join usando o ip de um server consul e já cria o agente com o join.
+=> Pode usar varios retry-join passando outros ip de servers caso não consiga acessar
+
+
+======== Checks no services ===========
+=> São verificações da "saúde" do serviço.
+=> No caso desse exemplo se o nginx cair o Consul não vai listar o ip da maquina com o nginx que deu problema
+=> Os checks servem para fazer essas verificações.
+=> Foi criado no services.json do consul01 um check para verificar o nginx no localhost. 
+=> Verifica a cada 10 segundos e se demorar mais de 1 segundo considera que o serviços está fora
+=> Depois de acrescentar o check no json necessário rodar o : consul reload
+
+
+======= Sincronizando Server via arquivo =====
+=> Foi criado uma pasta servers e nela outra pasta serv01 contendo o arquivo server.json com as configurações do server consul.
+=> no exemplo do arquivo server.json foi colcado no server01 o data_dir "/tmp" só para não criar uma pasta.
+=> Na pratica tem que criar uma pasta e não usar tmp. Pode criar a pasta usando docker mesmo. 
+=> entra no continer do server e roda o comando:
+
+$ consul agent -config-dir=/etc/consul.d
+
+=> Deve se repetir isso criando uma pasta e um arquivo server.json para cada server.
+
+======= Criptografia ==========
+=> Do jeito que está a rede de agentes Consul qualquer um que subir uma agente e dar um join entra na rede de cluster consul.
+=> Para evitar isso usa-se criptografia na rede garantindo que só quem tem acesso a cruiptografia entede o que a rede está "conversando".
+=> Passando o parametro encrypt na hora de criar os servers (no caso no arquivo serve.json) garante que os servers usem criptografia.
+=> Para gerar a chave de criptografia e passar no parametro encrypt é só gerar a chave com o comando consul:
+=> O mesmo para os clientes
+
+$ consul keygen
+
+=> É gerado uma chave que deve ser passada para todos os servers
+
+====== User Interface ==========
+=> A forma de habilitar a interface é passando o parametro -ui na hora de subir o server. 
+=> Ou colcar no arquivo de configuração.
+=> Como está rodando no docker tem que liberar a porta 8500 no arquivo do docker compose

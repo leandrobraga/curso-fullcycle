@@ -1,0 +1,16 @@
+==== Single Responsability Principle (SRP) ====
+=> Toda classe deve ter uma única responsabilidade.
+
+==== Open Closed Principle (OCP) ====
+=> A classe deve ser aberta para extensão e fechada para modificação.
+
+==== Liskov Substitution Principle (LSP )====
+=> As subclasses podem ser substituidas por suas classes pais.
+
+==== Interface Segregation Principle (ISP) ====
+=> Uma classe não é obrigada implementar interfaces que ela não utilizará
+
+==== Dependency Onversion Principle ====
+=> Dependa de abstrações e não implementações
+=> Iverter as dependências
+=> Provavelmente quando uma classe instancia outra classe está ferindo esse principio

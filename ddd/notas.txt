@@ -1,0 +1,9 @@
+==== Domínio & Subdomínio ====
+
+=> O domínio é formado por subdomínios.
+=> Core Domain: Coração do domínio, diferencial competitivo da empresa.
+=> Suport SubDomain: Apoiam o domínio, faz a operação do domínio possível.
+=> Generic Subdomain: Software auxiliares, sem diferencial competitivo. (Um gateway de pagamento em um e-comerce)
+
+==== Agregado =====
+=> É um conjunto de objetos associados que tratamos como uma unidade para propósito de mudanças de dados

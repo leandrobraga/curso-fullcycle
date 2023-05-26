@@ -19,10 +19,11 @@
 import Address from './address';
 
 export default class Customer {
-    _id: string;
-    _name: string;
-    _address!: Address;
-    _activate: boolean = false;
+    private _id: string;
+    private _name: string;
+    private _address!: Address;
+    private _activate: boolean = false;
+    private _rewardPoints: number = 0;
 
     constructor(id: string, name: string ) {
         this._id = id;
@@ -30,8 +31,16 @@ export default class Customer {
         this.validate();
     }
 
+    get id():string {
+        return this._id;
+    }
+
     get name():string {
         return this._name;
+    }
+
+    get rewardPoints(): number {
+        return this._rewardPoints;
     }
 
     validate() {
@@ -43,30 +52,6 @@ export default class Customer {
         }
         
     }
-
-    // get id(): string {
-    //     return this._id
-    // }
-
-    // get name(): string {
-    //     return this._name
-    // }
-
-    // get address(): string {
-    //     return this._address
-    // }
-
-    // set id(id: string) {
-    //     this._id = id
-    // }
-
-    // set name(name: string) {
-    //     this._name = name
-    // }
-
-    // set address(address: string) {
-    //     this._address = address
-    // }
 
     changeName(name: string) {
         this.validate();
@@ -86,6 +71,10 @@ export default class Customer {
 
     deactivate() {
         this._activate = false;
+    }
+
+    addRewardPoints(points: number) {
+        this._rewardPoints += points;
     }
 
     set Address(address: Address) {

@@ -32,6 +32,7 @@ export default class Order {
     get items(): OrderItem[] {
         return this._items;
     }
+    
 
     validate(): boolean {
         if (this._id.length === 0) {
@@ -49,7 +50,16 @@ export default class Order {
         return true;
     }
 
+    changeCustomer(customerID: string) {
+        this._customerId = customerID
+    }
+
+    addItems(orderItem: OrderItem) {
+        this._items.push(orderItem);
+        this._total = this.total();
+    }
+
     total(): number {
-        return this._items.reduce((acc, item) => acc + item.price, 0)
+        return this._items.reduce((acc, item) => acc + item.price * item.quantity, 0)
     }
 }

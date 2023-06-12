@@ -7,3 +7,16 @@
 
 ==== Agregado =====
 => É um conjunto de objetos associados que tratamos como uma unidade para propósito de mudanças de dados
+
+
+==== Evento de dominio ====
+=> Usar o evento de domínio para capturar uma ocorrência de algo que aconteceu no domínio.
+Componentes:
+- Evento => representa algo que aconteceu com data e hora.
+- Handler: Executa o processamento quando um evento é chamado.
+- Event Dispatcher: Responsável por armazenar e executar os handlers de um evento quando ele for disparado.
+Dinânimca:
+- Criar um Event Dispatcher;
+- Cfriar um evento
+- Criar um Handler para o evento
+- Registra o evento, juntamente com o Handler no Event Dispatcher

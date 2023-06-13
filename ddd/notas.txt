@@ -20,3 +20,11 @@ Dinânimca:
 - Cfriar um evento
 - Criar um Handler para o evento
 - Registra o evento, juntamente com o Handler no Event Dispatcher
+
+
+==== Módulos =====
+=> Deve respeitar a linguagem ubíqua
+=> Baixo acoplamento (a vesez é dificil)
+=> Um ou mais agregados devem estar juntos somente se fazer sentido
+=> Organizado pelo domínio/subdomínio e não pelo tipo de objetos
+=> Deve respeitar a mesma divisão quando estão em camadas diferentes

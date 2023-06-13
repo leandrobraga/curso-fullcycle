@@ -28,3 +28,6 @@ Dinânimca:
 => Um ou mais agregados devem estar juntos somente se fazer sentido
 => Organizado pelo domínio/subdomínio e não pelo tipo de objetos
 => Deve respeitar a mesma divisão quando estão em camadas diferentes
+
+
+==== Factories ====

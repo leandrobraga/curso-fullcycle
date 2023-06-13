@@ -31,3 +31,6 @@ Dinânimca:
 
 
 ==== Factories ====
+=> Ajuda a criar objetos complexos, agregados. Mas ela não faz parte do modelo de domínio.
+=> A factory não é modelada. Ela não faz parte do modelo do domínio. 
+=> Ela faz parte do design do domínio. Porque ela tem um papel no processo.

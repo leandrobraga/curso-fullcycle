@@ -1,0 +1,21 @@
+==== Ponto importantes sobre arquitetura ====
+- Formato que o software terá
+- Divisão de componentes
+- Comunicação entre componentes
+- Uma boa arquitetura vai facilitar o processo de desenvolvimento, deploy, operação e manutenção
+
+==== keep option open ====
+- Manter opçoes abertas. Postergar algumas decisões e focar no negócio.
+- Regras de negócios trazem valor real para o software.
+- Detalhes não devem impactar nas regras de negócio.
+- Ficar decidindo o ORM, se vai usar RabitMq ou kafka, qual banco de dados, tipo de api tudo isso são detalhes.
+
+==== Uses Cases ====
+- Inteção
+- Traz clareza de cada comortmento que o software tem.
+- Postergar ao máximo os detalhes e focar no negócio
+
+Use cases - SRP (Single responsability orinciple)
+
+- Temos tendencia de reaproveitar uses cases por serem muitos parecidos
+- Ex.: Alterar vs Inserir. Ambos consultam se o registro existe, persistem dados. MAS, são Use Cases diferentes  

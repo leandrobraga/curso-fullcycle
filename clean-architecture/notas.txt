@@ -19,3 +19,11 @@ Use cases - SRP (Single responsability orinciple)
 
 - Temos tendencia de reaproveitar uses cases por serem muitos parecidos
 - Ex.: Alterar vs Inserir. Ambos consultam se o registro existe, persistem dados. MAS, são Use Cases diferentes  
+
+==== Fluxo Uses Cases ====
+- Uses cases contam uma história
+
+
+==== Limites Arquiteturais =====
+- Tudo que não impacta diretamente nas regras de negócio deve estar em um limite arquitetural diferente.
+- Ex.: Frontend, banco de dados não muda  a regra de negócio da aplicação.

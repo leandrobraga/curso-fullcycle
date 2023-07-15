@@ -35,3 +35,8 @@ Use cases - SRP (Single responsability orinciple)
 - Ajuda a trafegar os dados entre os limites arquiteturais
 - Objeto anêmico, sem comportamento, não possui regra de negócio, não faz nada.
 - Contêm dados (Input e Output). Nem sempre a estrutura de dados de input é igual de output.
+
+==== Presenter ====
+- São objetos de transformação.
+- Adequa o DTO de output no formato correto para entregar o resultado. (XML, JSON, Protobuf)
+- 
